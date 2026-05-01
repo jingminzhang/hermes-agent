@@ -19,14 +19,14 @@ jobs:
           git remote add upstream https://github.com/NousResearch/hermes-agent.git
           git fetch upstream main
 
-      - name: Reset to upstream
+      - name: Merge upstream changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "Houzhong Xu"
+          git config user.email "ben@git4ta.fun"
           git checkout main
-          git reset --hard upstream/main
+          git merge upstream/main --no-edit || { git reset --hard upstream/main; }
 
-      - name: Force push to Codeup
+      - name: Push to Codeup
         run: |
           CODEUP_URL="https://houzhongxu:${{ secrets.CODEUP_PAT }}@codeup.aliyun.com/698053416ec1ba182dc6e452/hermes-agent.git"
-          git push --force "$CODEUP_URL" main
+          git push "$CODEUP_URL" main || git push --force "$CODEUP_URL" main
