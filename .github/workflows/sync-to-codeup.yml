@@ -17,5 +17,12 @@ jobs:
           cd repo
           git config user.name "Houzhong Xu"
           git config user.email "ben@git4ta.fun"
+
+          # 删除 PR refs 和其他非标准 refs
+          git for-each-ref --format='delete %(refname)' refs/pull/ | git update-ref --stdin 2>/dev/null || true
+          git for-each-ref --format='delete %(refname)' refs/replace/ | git update-ref --stdin 2>/dev/null || true
+          git for-each-ref --format='delete %(refname)' refs/notes/ | git update-ref --stdin 2>/dev/null || true
+
+          # mirror 推送（只含 heads 和 tags）
           git remote add codeup "$CODEUP_URL"
           git push --force --mirror codeup
