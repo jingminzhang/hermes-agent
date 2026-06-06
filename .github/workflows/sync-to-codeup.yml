@@ -9,23 +9,13 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Add upstream remote
+      - name: Shallow sync main to Codeup
+        env:
+          CODEUP_URL: "https://houzhongxu:${{ secrets.CODEUP_PAT }}@codeup.aliyun.com/698053416ec1ba182dc6e452/hermes-agent.git"
         run: |
-          git remote add upstream https://github.com/NousResearch/hermes-agent.git
-          git fetch upstream main
-
-      - name: Reset and sync to Codeup
-        run: |
+          git clone --bare --depth 1 https://github.com/NousResearch/hermes-agent.git repo
+          cd repo
           git config user.name "Houzhong Xu"
           git config user.email "ben@git4ta.fun"
-          git checkout main
-          git reset --hard upstream/main
-          CODEUP_URL="https://houzhongxu:${{ secrets.CODEUP_PAT }}@codeup.aliyun.com/698053416ec1ba182dc6e452/hermes-agent.git"
-          git push --force "$CODEUP_URL" main
-          git commit --allow-empty -m "sync: upstream code synced to Codeup"
-          git push "$CODEUP_URL" main
+          git remote add codeup "$CODEUP_URL"
+          git push --force --mirror codeup
